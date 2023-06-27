@@ -35,7 +35,35 @@ exports.index = asyncHandler(async (req, res, next) => {
 });
 
 exports.movie_list = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Movie list');
+  const allMoviesRaw = await db
+    .collection('movies')
+    .aggregate([
+      {
+        $lookup: {
+          from: 'directors',
+          localField: 'director._id',
+          foreignField: '_id',
+          as: 'director_info',
+        },
+      },
+    ])
+    .sort({ title: 1 })
+    .toArray();
+  const allMovies = [];
+  allMoviesRaw.forEach((rawMovie) => {
+    const normalizedMovie = rawMovie;
+    normalizedMovie.director = [];
+    for (let dir of rawMovie.director_info) {
+      normalizedMovie.director.push(Director(dir));
+    }
+    allMovies.push(Movie(normalizedMovie));
+  });
+  console.log(allMovies);
+  res.render('layout', {
+    contentFile: 'movie_list',
+    title: 'All movies',
+    movies: allMovies,
+  });
 });
 
 exports.movie_detail = asyncHandler(async (req, res, next) => {

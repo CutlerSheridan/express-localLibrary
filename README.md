@@ -18,6 +18,12 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_0.1.0_
+
+- write logic to display all movies
+- write template to display all movies
+- add movie with two directors to make sure their names display correctly
+
 _0.0.0_
 
 - add all controller files

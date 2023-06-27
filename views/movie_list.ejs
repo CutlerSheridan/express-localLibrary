@@ -1,0 +1,11 @@
+<h1><%= title %></h1>
+<ul>
+  <% for (let movie of movies) { %>
+  <li>
+    <a href='<%= movie.getUrl() %>'><%= movie.title %></a>
+    <% movie.director.forEach((dir, index) => { %>
+    <%= index === 0 ? '(' : '' %><%= dir.getName() %><%= index === movie.director.length - 1 ? ')' : ', ' %>
+    <% }) %>
+  </li>
+  <% } %>
+</ul>

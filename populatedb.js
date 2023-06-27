@@ -118,6 +118,8 @@ const createDirectors = async () => {
   await directorCreate('Steven', 'Spielberg', '1946-12-18');
   await directorCreate('Ridley', 'Scott', '1937-11-30');
   await directorCreate('Jane', 'Campion', '1954-04-30');
+  await directorCreate('Ethan', 'Coen', '1957-09-21');
+  await directorCreate('Joel', 'Coen', '1954-11-29');
 };
 const createMovies = async () => {
   console.log('Adding movies');
@@ -153,6 +155,9 @@ const createMovies = async () => {
   await movieCreate('The Color Purple', [directors[2]], 1985, {
     genre: [genres[1]],
   });
+  await movieCreate('Burn After Reading', [directors[5], directors[6]], 2008, {
+    genre: [genres[2]],
+  });
 };
 const createMovieInstances = async () => {
   console.log('Adding movie instances');
@@ -167,5 +172,6 @@ const createMovieInstances = async () => {
     movieInstanceCreate(movies[6], '4K'),
     movieInstanceCreate(movies[7], '4K'),
     movieInstanceCreate(movies[8], 'Blu-Ray'),
+    movieInstanceCreate(movies[9], 'Blu-Ray'),
   ]);
 };
