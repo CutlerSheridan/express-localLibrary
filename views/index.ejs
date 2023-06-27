@@ -1,0 +1,33 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+  </body>
+</html> -->
+
+<h1><%= title %></h1>
+<p>Welcome to <strong>LocalLibrary</strong>, a very basic Express website developed as a tutorial example on the Mozilla Developer Network.</p>
+<h2>Dynamic content</h2>
+<p>The library has the following record counts:</p>
+<ul>
+  <li>
+    <strong>Movies:</strong> <%= movie_count %>
+  </li>
+  <li>
+    <strong>Copies:</strong> <%= movie_instance_count %>
+  </li>
+  <li>
+    <strong>Copies available:</strong> <%= movie_instance_available_count %>
+  </li>
+  <li>
+    <strong>Directors:</strong> <%= director_count %>
+  </li>
+  <li>
+    <strong>Genres:</strong> <%= genre_count %>
+  </li>
+</ul>
