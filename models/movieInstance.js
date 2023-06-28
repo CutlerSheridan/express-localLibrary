@@ -1,3 +1,5 @@
+const { DateTime } = require('luxon');
+
 const _MovieInstanceSchema = ({
   _id, // assigned by MongoDB
   movie, // required reference to movieId
@@ -41,6 +43,14 @@ const MovieInstance = (infoObject) => {
 
   newMovieInstance.getUrl = () =>
     `/catalogue/movieinstance/${newMovieInstance._id}`;
+  newMovieInstance.formatStatusChangeDate = () => {
+    if (newMovieInstance.statusChangeDate) {
+      return DateTime.fromJSDate(
+        newMovieInstance.statusChangeDate
+      ).toLocaleString(DateTime.DATE_FULL);
+    }
+    return '(No date to format)';
+  };
 
   return newMovieInstance;
 };

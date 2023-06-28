@@ -1,0 +1,9 @@
+<h1><%= title %></h1>
+
+<ul>
+  <% directors.forEach(dir => { %>
+  <li>
+    <a href='<%= dir.getUrl() %>'><%= dir.getName() %></a> (<%= dir.getLifeDates() %>)
+  </li>
+  <% }) %>
+</ul>

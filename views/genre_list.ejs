@@ -1,0 +1,7 @@
+<h1><%= title %></h1>
+
+<ul>
+  <% genres.forEach(genre => { %>
+  <li><a href='<%= genre.getUrl() %>'><%= genre.name %></a></li>
+  <% }) %>
+</ul>

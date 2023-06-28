@@ -1,3 +1,5 @@
+const { DateTime } = require('luxon');
+
 const _DirectorSchema = ({
   _id,
   firstName = '',
@@ -15,6 +17,16 @@ const _DirectorSchema = ({
 };
 
 const Director = (infoObject) => {
+  if (infoObject.length) {
+    return infoObject.map((dir) => Director(dir));
+  }
+
+  if (infoObject.birthDate) {
+    infoObject.birthDate = new Date(infoObject.birthDate);
+  }
+  if (infoObject.deathDate) {
+    infoObject.deathDate = new Date(infoObject.deathDate);
+  }
   const directorObject = _DirectorSchema(infoObject);
   directorObject.firstName = normalizeNameLength(
     directorObject.firstName,
@@ -45,6 +57,17 @@ const Director = (infoObject) => {
     return name;
   };
   directorObject.getUrl = () => `/catalogue/director/${directorObject._id}`;
+  directorObject.getLifeDates = () => {
+    const birth = DateTime.fromJSDate(directorObject.birthDate).toLocaleString(
+      DateTime.DATE_MED
+    );
+    const death = directorObject.deathDate
+      ? DateTime.fromJSDate(directorObject.deathDate).toLocaleString(
+          DateTime.DATE_MED
+        )
+      : '';
+    return birth + ' - ' + death;
+  };
 
   return directorObject;
 };

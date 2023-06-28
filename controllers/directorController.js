@@ -1,8 +1,20 @@
 const Director = require('../models/director');
+const { db } = require('../mongodb_config');
+
 const asyncHandler = require('express-async-handler');
 
 exports.director_list = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Director list');
+  const allDirectorsRaw = await db
+    .collection('directors')
+    .find({})
+    .sort({ lastName: 1 })
+    .toArray();
+  const allDirectors = Director(allDirectorsRaw);
+  res.render('layout', {
+    contentFile: 'director_list',
+    title: 'Director List',
+    directors: allDirectors,
+  });
 });
 
 exports.director_detail = asyncHandler(async (req, res, next) => {

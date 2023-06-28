@@ -18,6 +18,13 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_0.1.2_
+
+- write author list logic
+- write author list template
+- write genre list logic
+- write genre list template
+
 _0.1.1_
 
 - write movie instance list logic

@@ -10,7 +10,7 @@
     <a href='<%= instance.movie.getUrl() %>'><%= instance.movie.title %></a> (<%= instance.movie.releaseYear %>): <%= instance.format %><%= instance.edition ? ` (${instance.edition}) - ` : ' - ' %>
     <span class='<%= instance.status === 'available' ? 'text-success' : instance.status === 'loaned' ? 'text-warning' : 'text-danger' %>'><%= instance.status.charAt(0).toUpperCase() + instance.status.slice(1) %></span>
     <% if (instance.status !== 'available') { %>
-    <span> - Since: <%= instance.statusChangeDate %></span>
+    <span> - Since: <%= instance.formatStatusChangeDate() %></span>
     <% } %>
   </li>
   <% }) %>

@@ -1,8 +1,20 @@
 const Genre = require('../models/genre');
+const { db } = require('../mongodb_config');
+
 const asyncHandler = require('express-async-handler');
 
 exports.genre_list = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Genre list');
+  const allGenresRaw = await db
+    .collection('genres')
+    .find({})
+    .sort({ name: 1 })
+    .toArray();
+  const allGenres = Genre(allGenresRaw);
+  res.render('layout', {
+    contentFile: 'genre_list',
+    title: 'Genre List',
+    genres: allGenres,
+  });
 });
 
 exports.genre_detail = asyncHandler(async (req, res, next) => {

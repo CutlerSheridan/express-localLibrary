@@ -3,6 +3,10 @@ const _GenreSchema = ({ _id, name }) => {
 };
 
 const Genre = (infoObject) => {
+  if (infoObject.length) {
+    return infoObject.map((g) => Genre(g));
+  }
+
   if (!infoObject.name) {
     return { error: 'name_required' };
   }
