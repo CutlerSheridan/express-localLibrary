@@ -18,6 +18,12 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_0.1.1_
+
+- write movie instance list logic
+- write movie instance list template
+- adjust formatting of movie list and movie instance list
+
 _0.1.0_
 
 - write logic to display all movies

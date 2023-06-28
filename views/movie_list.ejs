@@ -3,8 +3,9 @@
   <% for (let movie of movies) { %>
   <li>
     <a href='<%= movie.getUrl() %>'><%= movie.title %></a>
+    (<%= movie.releaseYear %>)
     <% movie.director.forEach((dir, index) => { %>
-    <%= index === 0 ? '(' : '' %><%= dir.getName() %><%= index === movie.director.length - 1 ? ')' : ', ' %>
+    <%= index === 0 ? `- ` : '' %><%= dir.getName() %><%= index === movie.director.length - 1 ? '' : ', ' %>
     <% }) %>
   </li>
   <% } %>

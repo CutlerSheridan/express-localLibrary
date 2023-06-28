@@ -4,6 +4,7 @@ const _MovieInstanceSchema = ({
   format, // 4K, Blu-Ray, Digital, DVD, VHS, Laserdisc, Other
   edition = null,
   status = 'available', // available, loaned, reserved, damaged
+  statusChangeDate = null,
 }) => {
   return {
     _id,
@@ -11,6 +12,7 @@ const _MovieInstanceSchema = ({
     format,
     edition,
     status,
+    statusChangeDate,
   };
 };
 
@@ -26,6 +28,13 @@ const MovieInstance = (infoObject) => {
   }
   if (infoObject.status && _statuses.indexOf(infoObject.status) === -1) {
     return { error: 'unrecognized_status' };
+  }
+  if (
+    infoObject.status &&
+    infoObject.status !== _statuses[0] &&
+    !infoObject.statusChangeDate
+  ) {
+    infoObject.statusChangeDate = Date.now();
   }
 
   const newMovieInstance = _MovieInstanceSchema(infoObject);
@@ -45,6 +54,6 @@ const _formats = [
   'Laserdisc',
   'Other',
 ];
-const _statuses = ['available', 'loaned', 'reserved', 'damaged'];
+const _statuses = ['available', 'loaned', 'damaged'];
 
 module.exports = MovieInstance;

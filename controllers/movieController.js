@@ -58,7 +58,6 @@ exports.movie_list = asyncHandler(async (req, res, next) => {
     }
     allMovies.push(Movie(normalizedMovie));
   });
-  console.log(allMovies);
   res.render('layout', {
     contentFile: 'movie_list',
     title: 'All movies',
