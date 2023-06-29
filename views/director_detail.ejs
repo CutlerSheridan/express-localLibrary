@@ -1,0 +1,12 @@
+<h1><%= director.getName() %></h1>
+<p><em><%= director.getLifeDates() %></em></p>
+
+<div style='margin-left: 30px'>
+  <h4>Movies</h4>
+  <dl>
+    <% movies.forEach(movie => { %>
+    <dt><a href='<%= movie.getUrl() %>'><%= movie.title %></a></dt>
+    <dd><%= movie.summary %></dd>
+    <% }) %>
+  </dl>
+</div>

@@ -1,5 +1,6 @@
 const Director = require('../models/director');
-const { db } = require('../mongodb_config');
+const Movie = require('../models/movie');
+const { db, ObjectId } = require('../mongodb_config');
 
 const asyncHandler = require('express-async-handler');
 
@@ -18,7 +19,26 @@ exports.director_list = asyncHandler(async (req, res, next) => {
 });
 
 exports.director_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Director detail: ${req.params.id}`);
+  const id = new ObjectId(req.params.id);
+  const [directorDoc, movieDocs] = await Promise.all([
+    db.collection('directors').findOne({ _id: id }),
+    db
+      .collection('movies')
+      .find({ 'director._id': id })
+      .sort({ title: 1 })
+      .toArray(),
+  ]);
+  console.log(directorDoc);
+  const director = Director(directorDoc);
+  console.log(director);
+  const movies = movieDocs.map((x) => Movie(x));
+
+  res.render('layout', {
+    contentFile: 'director_detail',
+    title: director.getName(),
+    director,
+    movies,
+  });
 });
 
 exports.director_create_get = asyncHandler(async (req, res, next) => {
