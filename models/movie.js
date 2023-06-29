@@ -3,18 +3,16 @@ const _MovieSchema = ({
   title,
   director, // required array of objects with name and directorId props
   releaseYear,
-  watched = false,
+  summary = '',
   genre = [], // optional array of objects with genreId and genreName
-  collection = [], // optional array of objects with collectionId and collectionName
 }) => {
   return {
     _id,
     title,
     director,
     releaseYear,
+    summary,
     genre,
-    collection,
-    watched,
   };
 };
 

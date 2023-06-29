@@ -19,6 +19,10 @@ const _MovieInstanceSchema = ({
 };
 
 const MovieInstance = (infoObject) => {
+  if (infoObject.length) {
+    return infoObject.map((ins) => MovieInstance(ins));
+  }
+
   if (!infoObject.movie) {
     return { error: 'movieId_required' };
   }

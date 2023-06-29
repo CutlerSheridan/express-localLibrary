@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 // set up MongoDB connection
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(process.env.MONGO_CONNECTION_STRING, {
@@ -14,4 +14,4 @@ const client = new MongoClient(process.env.MONGO_CONNECTION_STRING, {
 const db = client.db('local_library');
 client.connect();
 
-module.exports = { client, db };
+module.exports = { db, ObjectId };

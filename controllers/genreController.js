@@ -1,5 +1,6 @@
 const Genre = require('../models/genre');
-const { db } = require('../mongodb_config');
+const Movie = require('../models/movie');
+const { db, ObjectId } = require('../mongodb_config');
 
 const asyncHandler = require('express-async-handler');
 
@@ -18,7 +19,32 @@ exports.genre_list = asyncHandler(async (req, res, next) => {
 });
 
 exports.genre_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Genre detail: ${req.params.id}`);
+  const id = new ObjectId(req.params.id);
+  const [genreDoc, moviesOfGenreRaw] = await Promise.all([
+    db.collection('genres').findOne({ _id: id }),
+    db
+      .collection('movies')
+      .find({ 'genre._id': id })
+      .sort({ title: 1 })
+      .toArray(),
+  ]);
+  if (genreDoc === null) {
+    const err = new Error('Genre not found');
+    err.status = 404;
+    return next(err);
+  }
+  const genre = Genre(genreDoc);
+  const moviesOfGenre = [];
+  moviesOfGenreRaw.forEach((movie) => {
+    moviesOfGenre.push(Movie(movie));
+  });
+
+  res.render('layout', {
+    contentFile: 'genre_detail',
+    title: 'Genre Detail',
+    genre,
+    movies: moviesOfGenre,
+  });
 });
 
 exports.genre_create_get = asyncHandler(async (req, res, next) => {

@@ -2,7 +2,7 @@ const Movie = require('../models/movie');
 const MovieInstance = require('../models/movieInstance');
 const Director = require('../models/director');
 const Genre = require('../models/genre');
-const { db } = require('../mongodb_config');
+const { db, ObjectId } = require('../mongodb_config');
 
 const asyncHandler = require('express-async-handler');
 
@@ -66,7 +66,45 @@ exports.movie_list = asyncHandler(async (req, res, next) => {
 });
 
 exports.movie_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Movie detail: ${req.params.id}`);
+  const id = new ObjectId(req.params.id);
+  const movieDoc = await db.collection('movies').findOne({ _id: id });
+  if (movieDoc === 'null') {
+    const err = new Error('Book not found');
+    err.status = 404;
+    return next(err);
+  }
+  const movie = Movie(movieDoc);
+  console.log(movie);
+  const [directorDocs, genreDocs, instanceDocs] = await Promise.all([
+    db
+      .collection('directors')
+      .find({ _id: { $in: movie.director.map((x) => x._id) } })
+      .sort({ lastName: 1, firstName: 1 })
+      .toArray(),
+    db
+      .collection('genres')
+      .find({ _id: { $in: movie.genre.map((x) => x._id) } })
+      .sort({ name: 1 })
+      .toArray(),
+    db
+      .collection('movie_instances')
+      .find({ 'movie._id': id })
+      .sort({ format: 1 })
+      .toArray(),
+  ]);
+  const directors = Director(directorDocs);
+  const genres = Genre(genreDocs);
+  const instances = MovieInstance(instanceDocs);
+  console.log(instances);
+
+  res.render('layout', {
+    contentFile: 'movie_detail',
+    title: movie.title,
+    movie,
+    directors,
+    genres,
+    instances,
+  });
 });
 
 exports.movie_create_get = asyncHandler(async (req, res, next) => {

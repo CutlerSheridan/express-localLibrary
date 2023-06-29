@@ -8,6 +8,11 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### TODO LATER
 
+- create MongoDB indices:
+  - movies: genre.\_id
+  - ? movie_instances: $lookup movies.\_id from movie.\_id
+  - movie_instance: movie.\_id
+
 ##### Features
 
 ##### Behavior
@@ -17,6 +22,14 @@ View movies in your collection, how many copies of each and in which formats, wh
 - add credit
 
 #### DONE
+
+_0.1.3_
+
+- write genre_detail logic
+- write genre_detail template
+- write movie_detail logic
+- write movie_detail template
+- add some unavailable movies to populatedb.js
 
 _0.1.2_
 

@@ -1,0 +1,33 @@
+<h1><%= movie.title %> (<%= movie.releaseYear %>)</h1>
+<p>
+  <strong>Director<%= movie.director.length > 1 ? 's: ' : ': ' %></strong>
+  <% directors.forEach((dir, index) => { %>
+  <a href='<%= dir.getUrl() %>'><%= dir.getName() %></a><%= index < directors.length - 1 ? ', ' : '' %>
+  <% }) %>
+</p>
+<p><strong>Summary: </strong><%= movie.summary %></p>
+<p>
+  <strong>Genre<%= genres.length > 1 ? 's: ' : ' ' %></strong>
+  <% genres.forEach((genre, index) => { %>
+  <a href='<%= genre.getUrl() %>'><%= genre.name %></a><%= index < genres.length - 1 ? ', ' : '' %>
+  <% }) %>
+</p>
+
+<div style='margin-left: 30px'>
+  <h4>Copies</h4>
+  <% instances.forEach((instance, index) => { %>
+  <hr />
+  <p><strong>Format: </strong><%= instance.format %></p>
+  <% if (instance.edition) { %>
+  <p><strong>Edition: </strong><%= instance.edition %></p>
+  <% } %>
+  <p class="<%= instance.status === 'available' ? 'text-success' : instance.status === 'loaned' ? 'text-warning' : 'text-danger' %>" style='text-transform: capitalize'><%= instance.status %></p>
+  <% if (instance.status !== 'available') { %>
+  <p><strong>Since: </strong><%= instance.formatStatusChangeDate() %></p>
+  <% } %>
+  <p><strong>ID: </strong><a href='<%= instance.getUrl() %>'><%= instance._id.toString() %></a></p>
+  <% if (index === instances.length - 1) { %>
+  <hr />
+  <% } %>
+  <% }) %>
+</div>
