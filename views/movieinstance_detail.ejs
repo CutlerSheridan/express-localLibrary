@@ -1,0 +1,10 @@
+<h1>ID: <%= instance._id %></h1>
+<p><strong>Title: </strong><a href='<%= movie.getUrl() %>'><%= movie.title %></a></p>
+<p><strong>Format: </strong><%= instance.format %></p>
+<% if (instance.edition) { %>
+<p><strong>Edition: </strong><%= instance.edition %></p>
+<% } %>
+<p><strong>Status: </strong><span class="<%= instance.status === 'available' ? 'text-success' : instance.status === 'loaned' ? 'text-warning' : 'text-danger' %>" style='text-transform: capitalize'><%= instance.status %></span></p>
+<% if (instance.status !== 'available') { %>
+<p><strong>Since: </strong><%= instance.formatStatusChangeDate() %></p>
+<% } %>

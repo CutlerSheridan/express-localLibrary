@@ -28,9 +28,7 @@ exports.director_detail = asyncHandler(async (req, res, next) => {
       .sort({ title: 1 })
       .toArray(),
   ]);
-  console.log(directorDoc);
   const director = Director(directorDoc);
-  console.log(director);
   const movies = movieDocs.map((x) => Movie(x));
 
   res.render('layout', {

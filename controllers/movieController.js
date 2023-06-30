@@ -74,7 +74,6 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
   const movie = Movie(movieDoc);
-  console.log(movie);
   const [directorDocs, genreDocs, instanceDocs] = await Promise.all([
     db
       .collection('directors')

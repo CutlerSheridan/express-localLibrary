@@ -1,6 +1,6 @@
 const MovieInstance = require('../models/movieInstance');
 const Movie = require('../models/movie');
-const { db } = require('../mongodb_config');
+const { db, ObjectId } = require('../mongodb_config');
 
 const asyncHandler = require('express-async-handler');
 
@@ -35,7 +35,22 @@ exports.movieinstance_list = asyncHandler(async (req, res, next) => {
 });
 
 exports.movieinstance_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: MovieInstance detail: ${req.params.id}`);
+  const id = new ObjectId(req.params.id);
+  const instanceDoc = await db
+    .collection('movie_instances')
+    .findOne({ _id: id });
+  const instance = MovieInstance(instanceDoc);
+  const movieDoc = await db
+    .collection('movies')
+    .findOne({ _id: instance.movie._id });
+  const movie = Movie(movieDoc);
+
+  res.render('layout', {
+    contentFile: 'movieinstance_detail',
+    title: 'Movie Copy',
+    instance,
+    movie,
+  });
 });
 
 exports.movieinstance_create_get = asyncHandler(async (req, res, next) => {

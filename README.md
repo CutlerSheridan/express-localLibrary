@@ -23,6 +23,11 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_0.1.5_
+
+- write movieinstance_detail logic
+- write movieinstance_detail template
+
 _0.1.4_
 
 - write director_detail logic
