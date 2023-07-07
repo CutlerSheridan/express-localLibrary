@@ -17,11 +17,18 @@ const _MovieSchema = ({
 };
 
 const Movie = (infoObject) => {
+  let errors = [];
   if (!infoObject.director) {
-    return { error: 'director_required' };
+    errors.push({ error: 'director_required' });
   }
   if (!infoObject.releaseYear) {
-    return { error: 'releaseYear_required' };
+    errors.push({ error: 'releaseYear_required' });
+  }
+  if (!infoObject.summary) {
+    errors.push({ error: 'summary_required' });
+  }
+  if (errors.length > 0) {
+    return errors;
   }
 
   const movieObject = _MovieSchema(infoObject);

@@ -3,12 +3,9 @@ const MovieInstance = require('../models/movieInstance');
 const Director = require('../models/director');
 const Genre = require('../models/genre');
 const { db, ObjectId } = require('../mongodb_config');
-
 const asyncHandler = require('express-async-handler');
+const { body, validationResult } = require('express-validator');
 
-// exports.index = asyncHandler(async (req, res, next) => {
-//   res.send('NOT IMPLEMENTED: Site home page');
-// });
 exports.index = asyncHandler(async (req, res, next) => {
   const [
     numOfMovies,
@@ -94,7 +91,6 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
   const directors = Director(directorDocs);
   const genres = Genre(genreDocs);
   const instances = MovieInstance(instanceDocs);
-  console.log(instances);
 
   res.render('layout', {
     contentFile: 'movie_detail',
@@ -107,11 +103,114 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.movie_create_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Movie create GET');
+  let [allDirectors, allGenres] = await Promise.all([
+    db
+      .collection('directors')
+      .find({})
+      .sort({ lastName: 1, firstName: 1 }, { collation: { strength: 1 } })
+      .toArray(),
+    db.collection('genres').find({}).toArray(),
+  ]);
+
+  allDirectors = Director(allDirectors);
+  allGenres = Genre(allGenres);
+  res.render('layout', {
+    contentFile: 'movie_form',
+    title: 'Create Movie',
+    directors: allDirectors,
+    genres: allGenres,
+  });
 });
-exports.movie_create_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Movie create POST');
-});
+exports.movie_create_post = [
+  (req, res, next) => {
+    if (!(req.body.genre instanceof Array)) {
+      if (!req.body.genre) {
+        req.body.genre = [];
+      } else {
+        req.body.genre = [{ _id: req.body.genre }];
+      }
+    }
+    next();
+  },
+  (req, res, next) => {
+    // console.log(req.body.director, typeof req.body.director);
+    if (!(req.body.director instanceof Array)) {
+      // console.log(req.body.director, typeof req.body.director);
+      if (!req.body.director) {
+        req.body.director = [];
+        // console.log(req.body.director, typeof req.body.director);
+      } else {
+        req.body.director = [{ _id: req.body.director }];
+        // console.log(req.body.director, typeof req.body.director);
+      }
+    }
+    next();
+  },
+  body('title', 'Title must be specified').trim().isLength({ min: 1 }).escape(),
+  body('director.*').escape(),
+  body('summary', 'Summary must not be empty')
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body('release_year')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('Release year must be specified')
+    .isLength({ min: 4, max: 4 })
+    .withMessage('Release year must be four digits long'),
+  body('genre.*').escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const movie = Movie({
+      title: req.body.title,
+      director: req.body.director,
+      releaseYear: +req.body.release_year,
+      summary: req.body.summary || '',
+      genre: req.body.genre,
+    });
+
+    // if (!movie.genre) {
+    //   movie.genre = [];
+    // }
+    // if (!movie.director) {
+    //   movie.director = [];
+    // }
+    if (!errors.isEmpty()) {
+      let [allDirectors, allGenres] = await Promise.all([
+        db
+          .collection('directors')
+          .find({})
+          .sort({ firstName: 1, lastName: 1 }, { collation: { strength: 1 } })
+          .toArray(),
+        db.collection('genres').find({}).toArray(),
+      ]);
+      allDirectors = Director(allDirectors);
+      allGenres = Genre(allGenres);
+      // mark selected genres as checked
+      // IF THERE IS AN ERROR, CHANGE THIS INDEXOF TO FIND(X => X._ID)
+      for (const genre of allGenres) {
+        if (movie.genre.findIndex((x) => x._id === genre._id) > -1) {
+          genre.checked = true;
+        }
+      }
+      res.render('layout', {
+        contentFile: 'movie_form',
+        title: 'Create Movie',
+        directors: allDirectors,
+        genres: allGenres,
+        movie,
+        ObjectId,
+        errors: errors.array(),
+      });
+    } else {
+      await db.collection('movies').insertOne(movie);
+      res.redirect(movie.getUrl());
+    }
+  }),
+];
 
 exports.movie_delete_get = asyncHandler(async (req, res, next) => {
   res.send('NOT IMPLEMENTED: Movie delete GET');

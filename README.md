@@ -8,6 +8,7 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### TODO LATER
 
+- add existing director check to director create form
 - create MongoDB indices:
   - movies: genre.\_id
   - ? movie_instances: $lookup movies.\_id from movie.\_id
@@ -23,6 +24,11 @@ View movies in your collection, how many copies of each and in which formats, wh
 - add credit
 
 #### DONE
+
+_0.2.1_
+
+- write movie_create logic for title, director, year, summary
+- write template for same
 
 _0.2.0_
 
