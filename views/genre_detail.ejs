@@ -6,4 +6,7 @@
   <dt><a href='<%= movie.getUrl() %>'><%= movie.title %></a> (<%= movie.releaseYear %>)</dt>
   <dd><%= movie.summary %></dd>
   <% }) %>
+  <% if (!movies.length) { %>
+  <p>No movies currently listed of this genre.</p>
+  <% } %>
 </dl>

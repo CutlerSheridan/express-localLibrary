@@ -12,6 +12,7 @@ View movies in your collection, how many copies of each and in which formats, wh
   - movies: genre.\_id
   - ? movie_instances: $lookup movies.\_id from movie.\_id
   - movie_instance: movie.\_id
+  - genres: name, case insensitive w/ collation of 2 (1 would also ignore diacritics) - determine if this is necessary as it's only used when creating and people are more forgiving of that; if created, remove regex field value from genreController and add .collation() parameters
 
 ##### Features
 
@@ -22,6 +23,14 @@ View movies in your collection, how many copies of each and in which formats, wh
 - add credit
 
 #### DONE
+
+_0.2.0_
+
+- write genre_form logic with validation and sanitization
+- write genre_form template
+- write director_form logic
+- write director_form template
+- add Director method to provide short, formatted dates for birth and death for form value syntax agreement
 
 _0.1.5_
 

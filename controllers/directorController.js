@@ -1,8 +1,8 @@
 const Director = require('../models/director');
 const Movie = require('../models/movie');
 const { db, ObjectId } = require('../mongodb_config');
-
 const asyncHandler = require('express-async-handler');
+const { body, validationResult } = require('express-validator');
 
 exports.director_list = asyncHandler(async (req, res, next) => {
   const allDirectorsRaw = await db
@@ -40,11 +40,57 @@ exports.director_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.director_create_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Director create GET');
+  res.render('layout', {
+    contentFile: 'director_form',
+    title: 'Create Director',
+  });
 });
-exports.director_create_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Director create POST');
-});
+exports.director_create_post = [
+  // FYI don't actually use .isAlphanumeric() with names, this is just to show chaining
+  body('first_name')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('First name must be specified')
+    .isAlphanumeric()
+    .withMessage('First name should only contain alphanumeric characters'),
+  body('last_name')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('Last name must be specified')
+    .isAlphanumeric()
+    .withMessage('Last name should only contain alphanumeric characters'),
+  body('birth_date', 'Invalid date of birth')
+    .optional({ values: 'falsy' })
+    .isISO8601()
+    .toDate(),
+  body('death_date', 'Invalid date of death')
+    .optional({ values: 'falsy' })
+    .isISO8601()
+    .toDate(),
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const director = Director({
+      firstName: req.body.first_name,
+      lastName: req.body.last_name,
+      birthDate: req.body.birth_date,
+      deathDate: req.body.death_date,
+    });
+    if (!errors.isEmpty()) {
+      res.render('layout', {
+        contentFile: 'director_form',
+        title: 'Create Director',
+        director,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      await db.collection('directors').insertOne(director);
+      res.redirect(director.getUrl());
+    }
+  }),
+];
 
 exports.director_delete_get = asyncHandler(async (req, res, next) => {
   res.send('NOT IMPLEMENTED: Director delete GET');

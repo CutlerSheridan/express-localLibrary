@@ -1,0 +1,29 @@
+<h1><%= title %></h1>
+
+<form method='POST' action=''>
+  <div class="form-group">
+    <label for="first_name">First Name: </label>
+    <input class='form-control' id='first_name' name='first_name' value='<%= locals.director ? director.firstName : "" %>' placeholder="Steven" />
+  </div>
+  <div class="form-group">
+    <label for="last_name">Last Name: </label>
+    <input class='form-control' id='last_name' name='last_name' value='<%= locals.director ? director.lastName : "" %>' placeholder="Spielberg" />
+  </div>
+  <div class="form-group">
+    <label for="birth_date">Birth date: </label>
+    <input type='date' class='form-control' id='birth_date' name='birth_date' value='<%= locals.director ? director.getShortBirthDate() : "" %>' placeholder='mm/dd/yyyy' />
+  </div>
+  <div class="form-group">
+    <label for="death_date">Death date: </label>
+    <input type='date' class='form-control' id='death_date' name='death_date' value='<%= locals.director ? director.getShortDeathDate() : "" %>' placeholder='mm/dd/yyyy' />
+  </div>
+  <button type='submit'>Submit</button>
+</form>
+
+<% if (locals.errors) { %>
+<ul>
+  <% errors.forEach(err => { %>
+  <li style='color: red'><%= err.msg %></li>
+  <% }) %>
+</ul>
+<% } %>

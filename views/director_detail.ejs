@@ -8,5 +8,8 @@
     <dt><a href='<%= movie.getUrl() %>'><%= movie.title %></a></dt>
     <dd><%= movie.summary %></dd>
     <% }) %>
+    <% if (!movies.length) { %>
+    <p>No movies currently listed by this director.</p>
+    <% } %>
   </dl>
 </div>

@@ -1,0 +1,16 @@
+<h1><%= title %></h1>
+<form method='POST' action=''>
+  <div class="form-group">
+    <label for="name">Genre: </label>
+    <!-- have to use locals.<variableName> to check if variable exists when not property of object -->
+    <input type="text" class='form-control' id='name' name='name' placeholder='Horror, Comedy, etc.' value="<%= locals.genre ? genre.name : '' %>" required />
+  </div>
+  <button type='submit'>Submit</button>
+</form>
+<% if(locals.errors) { %>
+<ul>
+  <% errors.forEach(err =>  { %>
+  <li style='color: red'><%= err.msg %></li>
+  <% }) %>
+</ul>
+<% } %>

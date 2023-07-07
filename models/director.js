@@ -68,6 +68,40 @@ const Director = (infoObject) => {
       : '';
     return birth + ' - ' + death;
   };
+  directorObject.getShortBirthDate = () => {
+    const birth = DateTime.fromJSDate(directorObject.birthDate).toLocaleString(
+      DateTime.SHORT
+    );
+    const rawDateArray = birth.split('/');
+    const dateArray = [];
+    rawDateArray.forEach((d) => {
+      if (d.length < 2) {
+        dateArray.push('0' + d);
+      } else {
+        dateArray.push(d);
+      }
+    });
+    return dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
+    // const regex = new RegExp('/', 'g');
+    // return birth.replace(regex, '-');
+  };
+  directorObject.getShortDeathDate = () => {
+    const death = DateTime.fromJSDate(directorObject.deathDate).toLocaleString(
+      DateTime.SHORT
+    );
+    const rawDateArray = death.split('/');
+    const dateArray = [];
+    rawDateArray.forEach((d) => {
+      if (d.length < 2) {
+        dateArray.push('0' + d);
+      } else {
+        dateArray.push(d);
+      }
+    });
+    return dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
+    // const regex = /\//g;
+    // return death.replace(regex, '-');
+  };
 
   return directorObject;
 };
