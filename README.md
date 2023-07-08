@@ -25,6 +25,19 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_0.2.2_
+
+- add genres to movie_form logic
+- add genres to movie_form template
+- fix type agreement when validation flattens object arrays into string arrays with genre and director
+- retain selected directors upon movie_form error
+- retain selected genres upon movie_form error
+- alter constructors for movie so validation happens with express-validator instead
+- in movie creation, cast director \_id prop to ObjectId type
+- fix movie_detail logic so movieinstances and genres don't return errors if empty
+- add empty text for instances in movie_detail template
+- fix typo in movie_detail template
+
 _0.2.1_
 
 - write movie_create logic for title, director, year, summary

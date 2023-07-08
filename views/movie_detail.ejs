@@ -7,7 +7,7 @@
 </p>
 <p><strong>Summary: </strong><%= movie.summary %></p>
 <p>
-  <strong>Genre<%= genres.length > 1 ? 's: ' : ' ' %></strong>
+  <strong>Genre<%= genres.length > 1 ? 's: ' : ': ' %></strong>
   <% genres.forEach((genre, index) => { %>
   <a href='<%= genre.getUrl() %>'><%= genre.name %></a><%= index < genres.length - 1 ? ', ' : '' %>
   <% }) %>
@@ -15,6 +15,9 @@
 
 <div style='margin-left: 30px'>
   <h4>Copies</h4>
+  <% if (!instances.length) { %>
+  <p>No copies of this movie currently listed.</p>
+  <% } else { %>
   <% instances.forEach((instance, index) => { %>
   <hr />
   <p><strong>Format: </strong><%= instance.format %></p>
@@ -30,4 +33,5 @@
   <hr />
   <% } %>
   <% }) %>
+  <% } %>
 </div>

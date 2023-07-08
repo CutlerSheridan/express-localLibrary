@@ -21,12 +21,6 @@ const Movie = (infoObject) => {
   if (!infoObject.director) {
     errors.push({ error: 'director_required' });
   }
-  if (!infoObject.releaseYear) {
-    errors.push({ error: 'releaseYear_required' });
-  }
-  if (!infoObject.summary) {
-    errors.push({ error: 'summary_required' });
-  }
   if (errors.length > 0) {
     return errors;
   }

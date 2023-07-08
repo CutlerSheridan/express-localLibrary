@@ -9,8 +9,7 @@
     <select class='form-control' id='director' name='director' required>
       <% directors.forEach(dir => { %>
       <% if (locals.movie) { %>
-      <!-- <% console.log(movie, movie.director, dir._id) %> -->
-      <option value='<%= dir._id %>' selected='<%= movie.director.findIndex(x => x._id === dir._id.str) > -1 ? "selected" : false %>'><%= dir.getName() %></option>
+      <option value='<%= dir._id %>' <%= movie.director.findIndex(x => x._id === dir._id.toString()) > -1 ? 'selected' : '' %>><%= dir.getName() %></option>
       <% } else { %>
       <option value='<%= dir._id %>'><%= dir.getName() %></option>
       <% } %>
@@ -19,11 +18,21 @@
   </div>
   <div class="form-group">
     <label for="release_year">Release year: </label>
-    <input type='text' class='form-control' id='release_year' name='release_year' value='<%= locals.movie ? movie.releaseYear : "" %>'>
+    <input type='text' class='form-control' id='release_year' name='release_year'>
+  </div>
+  <div class="form-group">
+    <label>Genres: </label>
+    <% genres.forEach(g => { %>
+    <div>
+      <input type="checkbox" class='checkbox-input' id='<%= g._id %>' name='genre' value='<%= g._id %>' <%= g.checked ? 'checked' : '' %>>
+      <label for=' <%= g._id %>'><%= g.name %></label>
+    </div>
+    <% }) %>
+
   </div>
   <div class="form-group">
     <label for="summary">Summary: </label>
-    <input type='text' class='form-control' id='summary' name='summary' value='<%= locals.movie ? movie.summary : '' %>'>
+    <input type='textarea' class='form-control' id='summary' name='summary'>
   </div>
   <button type='submit'>Submit</button>
 </form>

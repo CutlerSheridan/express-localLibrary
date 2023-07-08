@@ -89,8 +89,8 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
       .toArray(),
   ]);
   const directors = Director(directorDocs);
-  const genres = Genre(genreDocs);
-  const instances = MovieInstance(instanceDocs);
+  const genres = genreDocs.length ? Genre(genreDocs) : [];
+  const instances = instanceDocs.length ? MovieInstance(instanceDocs) : [];
 
   res.render('layout', {
     contentFile: 'movie_detail',
@@ -127,21 +127,18 @@ exports.movie_create_post = [
       if (!req.body.genre) {
         req.body.genre = [];
       } else {
-        req.body.genre = [{ _id: req.body.genre }];
+        req.body.genre = [req.body.genre];
       }
     }
+
     next();
   },
   (req, res, next) => {
-    // console.log(req.body.director, typeof req.body.director);
     if (!(req.body.director instanceof Array)) {
-      // console.log(req.body.director, typeof req.body.director);
       if (!req.body.director) {
         req.body.director = [];
-        // console.log(req.body.director, typeof req.body.director);
       } else {
-        req.body.director = [{ _id: req.body.director }];
-        // console.log(req.body.director, typeof req.body.director);
+        req.body.director = [req.body.director];
       }
     }
     next();
@@ -163,36 +160,32 @@ exports.movie_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-
     const movie = Movie({
       title: req.body.title,
-      director: req.body.director,
+      director: req.body.director.map((x) => {
+        return { _id: new ObjectId(x) };
+      }),
       releaseYear: +req.body.release_year,
       summary: req.body.summary || '',
-      genre: req.body.genre,
+      genre: req.body.genre.map((x) => {
+        return { _id: new ObjectId(x) };
+      }),
     });
 
-    // if (!movie.genre) {
-    //   movie.genre = [];
-    // }
-    // if (!movie.director) {
-    //   movie.director = [];
-    // }
     if (!errors.isEmpty()) {
       let [allDirectors, allGenres] = await Promise.all([
         db
           .collection('directors')
           .find({})
-          .sort({ firstName: 1, lastName: 1 }, { collation: { strength: 1 } })
+          .sort({ lastName: 1, firstName: 1 }, { collation: { strength: 1 } })
           .toArray(),
         db.collection('genres').find({}).toArray(),
       ]);
       allDirectors = Director(allDirectors);
       allGenres = Genre(allGenres);
       // mark selected genres as checked
-      // IF THERE IS AN ERROR, CHANGE THIS INDEXOF TO FIND(X => X._ID)
       for (const genre of allGenres) {
-        if (movie.genre.findIndex((x) => x._id === genre._id) > -1) {
+        if (movie.genre.findIndex((x) => x._id === genre._id.toString()) > -1) {
           genre.checked = true;
         }
       }
