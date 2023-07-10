@@ -11,11 +11,11 @@
   </div>
   <div class="form-group">
     <label for="birth_date">Birth date: </label>
-    <input type='date' class='form-control' id='birth_date' name='birth_date' value='<%= locals.director ? director.getShortBirthDate() : "" %>' placeholder='mm/dd/yyyy' />
+    <input type='date' class='form-control' id='birth_date' name='birth_date' value='<%= locals.director ? to_date_yyyy_mm_dd(director.birthDate) : "" %>' placeholder='mm/dd/yyyy' />
   </div>
   <div class="form-group">
     <label for="death_date">Death date: </label>
-    <input type='date' class='form-control' id='death_date' name='death_date' value='<%= locals.director ? director.getShortDeathDate() : "" %>' placeholder='mm/dd/yyyy' />
+    <input type='date' class='form-control' id='death_date' name='death_date' value='<%= locals.director ? to_date_yyyy_mm_dd(director.deathDate) : "" %>' placeholder='mm/dd/yyyy' />
   </div>
   <button type='submit'>Submit</button>
 </form>

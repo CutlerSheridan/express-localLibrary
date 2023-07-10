@@ -1,5 +1,6 @@
 const Director = require('../models/director');
 const Movie = require('../models/movie');
+const { to_date_yyyy_mm_dd } = require('./date_utility');
 const { db, ObjectId } = require('../mongodb_config');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult, oneOf } = require('express-validator');
@@ -81,6 +82,7 @@ exports.director_create_post = [
         contentFile: 'director_form',
         title: 'Create Director',
         director,
+        to_date_yyyy_mm_dd,
         errors: errors.array(),
       });
       return;

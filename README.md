@@ -1,12 +1,10 @@
-# Express Local Library Tutorial
+# Express Local Library
 
 ## A movie library built using Express and MongoDB
 
 View movies in your collection, how many copies of each and in which formats, which are available or not, directors, and genres.
 
 #### TODO NEXT
-
-- try refactoring Director date method with simpler methodology
 
 #### TODO LATER
 
@@ -27,6 +25,10 @@ View movies in your collection, how many copies of each and in which formats, wh
 - add credit
 
 #### DONE
+
+_0.2.4_
+
+- extract date formatting logic converting dates to yyyy-MM-dd from Director into new date_utitily library
 
 _0.2.3_
 
