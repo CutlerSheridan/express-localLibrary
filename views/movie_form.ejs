@@ -25,7 +25,7 @@
     <% genres.forEach(g => { %>
     <div>
       <input type="checkbox" class='checkbox-input' id='<%= g._id %>' name='genre' value='<%= g._id %>' <%= g.checked ? 'checked' : '' %>>
-      <label for=' <%= g._id %>'><%= g.name %></label>
+      <label for='<%= g._id %>'><%= g.name %></label>
     </div>
     <% }) %>
 

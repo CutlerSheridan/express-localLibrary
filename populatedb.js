@@ -11,7 +11,7 @@ const userArgs = process.argv.slice(2);
 
 const Movie = require('./models/movie');
 const Director = require('./models/director');
-const MovieInstance = require('./models/movieInstance');
+const { MovieInstance } = require('./models/movieInstance');
 const Genre = require('./models/genre');
 
 const genres = [];

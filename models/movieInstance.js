@@ -19,27 +19,15 @@ const _MovieInstanceSchema = ({
 };
 
 const MovieInstance = (infoObject) => {
+  // extend factory function to pass array as parameter
   if (infoObject.length) {
     return infoObject.map((ins) => MovieInstance(ins));
   }
 
-  if (!infoObject.movie) {
-    return { error: 'movieId_required' };
+  if (infoObject.status && STATUSES.indexOf(infoObject.status) === -1) {
+    infoObject.status = STATUSES[0];
   }
-  if (!infoObject.format) {
-    return { error: 'format_required' };
-  }
-  if (infoObject.format && _formats.indexOf(infoObject.format) === -1) {
-    return { error: 'unrecognized_format' };
-  }
-  if (infoObject.status && _statuses.indexOf(infoObject.status) === -1) {
-    return { error: 'unrecognized_status' };
-  }
-  if (
-    infoObject.status &&
-    infoObject.status !== _statuses[0] &&
-    !infoObject.statusChangeDate
-  ) {
+  if (infoObject.status !== STATUSES[0] && !infoObject.statusChangeDate) {
     infoObject.statusChangeDate = Date.now();
   }
 
@@ -59,7 +47,7 @@ const MovieInstance = (infoObject) => {
   return newMovieInstance;
 };
 
-const _formats = [
+const FORMATS = [
   '4K',
   'Blu-Ray',
   'Digital',
@@ -68,6 +56,6 @@ const _formats = [
   'Laserdisc',
   'Other',
 ];
-const _statuses = ['available', 'loaned', 'damaged'];
+const STATUSES = ['available', 'loaned', 'damaged'];
 
-module.exports = MovieInstance;
+module.exports = { MovieInstance, FORMATS, STATUSES };

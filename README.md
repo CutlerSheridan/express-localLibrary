@@ -6,6 +6,8 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### TODO NEXT
 
+- try refactoring Director date method with simpler methodology
+
 #### TODO LATER
 
 - add existing director check to director create form
@@ -14,6 +16,7 @@ View movies in your collection, how many copies of each and in which formats, wh
   - ? movie_instances: $lookup movies.\_id from movie.\_id
   - movie_instance: movie.\_id
   - genres: name, case insensitive w/ collation of 2 (1 would also ignore diacritics) - determine if this is necessary as it's only used when creating and people are more forgiving of that; if created, remove regex field value from genreController and add .collation() parameters
+  - movies: case insensitve by title for movieinstance_create_get and \_post
 
 ##### Features
 
@@ -24,6 +27,14 @@ View movies in your collection, how many copies of each and in which formats, wh
 - add credit
 
 #### DONE
+
+_0.2.3_
+
+- write movieinstance_create logic
+- refactor MovieInstance export as object so global variables can be shared
+- refactor directorController logic so validation checks that at least one name is given (first or last) instead of requiring both
+- add custom validators to movieinstance status and format to check if they're acceptable
+- add custom sanitizer to movieinstance movie to convert it to MongoDB ObjectId
 
 _0.2.2_
 

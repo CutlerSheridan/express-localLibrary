@@ -2,7 +2,7 @@ const Director = require('../models/director');
 const Movie = require('../models/movie');
 const { db, ObjectId } = require('../mongodb_config');
 const asyncHandler = require('express-async-handler');
-const { body, validationResult } = require('express-validator');
+const { body, validationResult, oneOf } = require('express-validator');
 
 exports.director_list = asyncHandler(async (req, res, next) => {
   const allDirectorsRaw = await db
@@ -47,19 +47,18 @@ exports.director_create_get = asyncHandler(async (req, res, next) => {
 });
 exports.director_create_post = [
   // FYI don't actually use .isAlphanumeric() with names, this is just to show chaining
+  oneOf([body('first_name').notEmpty(), body('last_name').notEmpty()], {
+    message: 'A first or last name must be provided',
+  }),
   body('first_name')
     .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('First name must be specified')
     .isAlphanumeric()
+    .escape()
     .withMessage('First name should only contain alphanumeric characters'),
   body('last_name')
     .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('Last name must be specified')
     .isAlphanumeric()
+    .escape()
     .withMessage('Last name should only contain alphanumeric characters'),
   body('birth_date', 'Invalid date of birth')
     .optional({ values: 'falsy' })

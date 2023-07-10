@@ -1,5 +1,5 @@
 const Movie = require('../models/movie');
-const MovieInstance = require('../models/movieInstance');
+const { MovieInstance } = require('../models/movieInstance');
 const Director = require('../models/director');
 const Genre = require('../models/genre');
 const { db, ObjectId } = require('../mongodb_config');

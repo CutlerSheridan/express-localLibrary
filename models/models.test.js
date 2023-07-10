@@ -1,6 +1,6 @@
 const Director = require('./director.js');
 const Movie = require('./movie.js');
-const MovieInstance = require('./movieInstance.js');
+const { MovieInstance } = require('./movieInstance.js');
 const Genre = require('./genre.js');
 
 describe('director', () => {
