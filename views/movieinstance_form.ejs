@@ -1,0 +1,51 @@
+<h1><%= title %></h1>
+<form method='POST' action=''>
+  <div class="form-group">
+    <label for="movie">Movie: *</label>
+    <select class='form-control' id="movie" name="movie">
+      <% movies.forEach(movie => { %>
+      <option value='<%= movie._id %>' <%= !locals.instance ? '' : instance.movie._id.equals(movie._id) ? 'selected' : '' %>><%= movie.title %> (<%= movie.releaseYear %>)</option>
+      <% }) %>
+    </select>
+  </div>
+  <fieldset class='form-group'>
+    <label for='format'>Format: *</label>
+    <% formats.forEach((format, index) => { %>
+    <div>
+      <input type='radio' name='format' id='format-<%= index %>' value='<%= format %>'>
+      <label for="format-<%= index %>"><%= format %></label>
+    </div>
+    <% }) %>
+  </fieldset>
+  <div class='form-group'>
+    <label for='edition'>Edition: </label>
+    <input class='form-control' id='edition' name='edition' value='<%= locals.instance ? instance.edition : "" %>'>
+  </div>
+  <div class='form-group'>
+    <label for='status'>Status: *</label>
+    <select class='form-control' id='status' name='status' onchange=''>
+      <% statuses.forEach(status => { %>
+      <option value='<%= status %>' <%= !locals.instance ? '' : instance.status === status ? 'selected' : '' %>><%= status.charAt(0).toUpperCase() + status.slice(1) %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class='form-group'>
+    <label for='unavailable_date'>Unavailable since:</label>
+    <% if (locals.instance) { %>
+    <input type='date' class='form-control' id='unavailable_date' name='unavailable_date' value='<%= instance.status === statuses[0] ? "" : to_date_yyyy_mm_dd(instance.statusChangeDate) %>'>
+    <% } else { %>
+    <input type='date' class='form-control' id='unavailable_date' name='unavailable_date'>
+    <% } %>
+  </div>
+
+  <button type='submit'>Submit</button>
+</form>
+<p>* required</p>
+
+<% if (locals.errors) { %>
+<ul>
+  <% errors.forEach(err => { %>
+  <li style=' color: red'><%= err.msg %></li>
+  <% }) %>
+</ul>
+<% } %>

@@ -1,5 +1,5 @@
 <h1>ID: <%= instance._id %></h1>
-<p><strong>Title: </strong><a href='<%= movie.getUrl() %>'><%= movie.title %></a></p>
+<p><strong>Title: </strong><a href='<%= movie.getUrl() %>'><%= movie.title %> (<%= movie.releaseYear %>)</a></p>
 <p><strong>Format: </strong><%= instance.format %></p>
 <% if (instance.edition) { %>
 <p><strong>Edition: </strong><%= instance.edition %></p>

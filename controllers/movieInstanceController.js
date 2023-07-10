@@ -1,6 +1,7 @@
 const { MovieInstance, FORMATS, STATUSES } = require('../models/movieInstance');
 const Movie = require('../models/movie');
 const { db, ObjectId } = require('../mongodb_config');
+const { to_date_yyyy_mm_dd } = require('../controllers/date_utility');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 
@@ -64,6 +65,8 @@ exports.movieinstance_create_get = asyncHandler(async (req, res, next) => {
     contentFile: 'movieinstance_form',
     title: 'Create Movie Instance',
     movies: allMovies,
+    formats: FORMATS,
+    statuses: STATUSES,
   });
 });
 exports.movieinstance_create_post = [
@@ -84,14 +87,21 @@ exports.movieinstance_create_post = [
     .withMessage('Must select format')
     .custom((value) => FORMATS.indexOf(value) !== -1)
     .withMessage('Unrecognized format'),
+  body('unavailable_date', 'Invalid unavailable date')
+    .optional({ values: 'falsy' })
+    .customSanitizer((value, { req }) =>
+      req.body.status === STATUSES[0] ? '' : value
+    )
+    .isISO8601()
+    .toDate(),
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const movieInstance = MovieInstance({
-      movie: req.body.movie,
+      movie: { _id: req.body.movie },
       format: req.body.format,
       edition: req.body.edition,
       status: req.body.status,
-      statusChangeDate: req.body.statusChangeDate,
+      statusChangeDate: req.body.unavailable_date,
     });
 
     if (!errors.isEmpty()) {
@@ -105,13 +115,16 @@ exports.movieinstance_create_post = [
         contentFile: 'movieinstance_form',
         title: 'Create Movie Instance',
         movies: allMovies,
-        movieInstance,
+        instance: movieInstance,
+        formats: FORMATS,
+        statuses: STATUSES,
+        ObjectId,
+        to_date_yyyy_mm_dd,
         errors: errors.array(),
       });
     } else {
-      res.send('Success! ' + movieInstance);
-      // await db.collection('movieinstances').insertOne(movieInstance);
-      // res.redirect(movieInstance.getUrl());
+      await db.collection('movie_instances').insertOne(movieInstance);
+      res.redirect(movieInstance.getUrl());
     }
   }),
 ];

@@ -26,13 +26,19 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_0.2.5_
+
+- write movieinstance_form template
+- retain selected values upon incomplete form submission
+- refactor instance.movie assignment to be compatible with other entries by making it an object with an \_id prop instead of just the id (since I idiotically had all object references include all data in objects instead of just referencing the IDs for lookup)
+
 _0.2.4_
 
 - extract date formatting logic converting dates to yyyy-MM-dd from Director into new date_utitily library
 
 _0.2.3_
 
-- write movieinstance_create logic
+- write movieinstance_form logic
 - refactor MovieInstance export as object so global variables can be shared
 - refactor directorController logic so validation checks that at least one name is given (first or last) instead of requiring both
 - add custom validators to movieinstance status and format to check if they're acceptable

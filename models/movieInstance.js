@@ -29,6 +29,8 @@ const MovieInstance = (infoObject) => {
   }
   if (infoObject.status !== STATUSES[0] && !infoObject.statusChangeDate) {
     infoObject.statusChangeDate = Date.now();
+  } else if (infoObject.status !== STATUSES[0] && infoObject.statusChangeDate) {
+    infoObject.statusChangeDate = new Date(infoObject.statusChangeDate);
   }
 
   const newMovieInstance = _MovieInstanceSchema(infoObject);
