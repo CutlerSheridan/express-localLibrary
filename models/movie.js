@@ -18,12 +18,6 @@ const _MovieSchema = ({
 
 const Movie = (infoObject) => {
   let errors = [];
-  if (!infoObject.director) {
-    errors.push({ error: 'director_required' });
-  }
-  if (errors.length > 0) {
-    return errors;
-  }
 
   const movieObject = _MovieSchema(infoObject);
 

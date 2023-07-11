@@ -94,10 +94,57 @@ exports.director_create_post = [
 ];
 
 exports.director_delete_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Director delete GET');
+  const id = new ObjectId(req.params.id);
+  const [rawDirector, rawAllMoviesByDirector] = await Promise.all([
+    db.collection('directors').findOne({ _id: id }),
+    db
+      .collection('movies')
+      .find({ 'director._id': id })
+      .project({ title: 1, summary: 1, releaseYear: 1 })
+      .sort({ title: 1 })
+      .toArray(),
+  ]);
+  const director = Director(rawDirector);
+  const allMoviesByDirector = rawAllMoviesByDirector.map((x) => Movie(x));
+
+  if (!director) {
+    res.redirect('catalogue/directors');
+  }
+
+  res.render('layout', {
+    contentFile: 'director_delete',
+    title: 'Delete Director',
+    director,
+    movies: allMoviesByDirector,
+  });
 });
 exports.director_delete_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Director delete POST');
+  const id = new ObjectId(req.params.id);
+  const [rawDirector, rawAllMoviesByDirector] = await Promise.all([
+    db.collection('directors').findOne({ _id: id }),
+    db
+      .collection('movies')
+      .find({ 'director._id': id })
+      .project({ title: 1, summary: 1, releaseYear: 1 })
+      .sort({ title: 1 })
+      .toArray(),
+  ]);
+  const director = Director(rawDirector);
+  const allMoviesByDirector = rawAllMoviesByDirector.map((x) => Movie(x));
+
+  if (allMoviesByDirector.length) {
+    res.render('layout', {
+      contentFile: 'director_delete',
+      title: 'Delete Director',
+      director,
+      movies: allMoviesByDirector,
+    });
+  }
+
+  await db
+    .collection('directors')
+    .deleteOne({ _id: new ObjectId(req.body.director_id) });
+  res.redirect('/catalogue/directors');
 });
 
 exports.director_update_get = asyncHandler(async (req, res, next) => {

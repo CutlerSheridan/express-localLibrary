@@ -15,6 +15,7 @@ View movies in your collection, how many copies of each and in which formats, wh
   - movie_instance: movie.\_id
   - genres: name, case insensitive w/ collation of 2 (1 would also ignore diacritics) - determine if this is necessary as it's only used when creating and people are more forgiving of that; if created, remove regex field value from genreController and add .collation() parameters
   - movies: case insensitve by title for movieinstance_create_get and \_post
+  - movies: by director.\_id for director_delete_get
 
 ##### Features
 
@@ -25,6 +26,10 @@ View movies in your collection, how many copies of each and in which formats, wh
 - add credit
 
 #### DONE
+
+_0.3.0_
+
+- implement director_delete
 
 _0.2.5_
 

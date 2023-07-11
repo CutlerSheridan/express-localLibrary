@@ -1,0 +1,25 @@
+<h1>Delete <%= director.getName() %>?</h1>
+<p><em><%= director.getLifeDates() %></em></p>
+
+
+<% if (movies.length) { %>
+<p><strong>Delete the following movies before deleting this director.</strong></p>
+<div style='margin-left: 30px'>
+  <h4>Movies</h4>
+  <dl>
+    <% movies.forEach(movie => { %>
+    <dt><a href='<%= movie.getUrl() %>'><%= movie.title %></a></dt>
+    <dd><%= movie.summary %></dd>
+    <% }) %>
+  </dl>
+</div>
+<% } else { %>
+<p>Are you sure you want to delete this author?</p>
+<form method='POST' action=''>
+  <div class="form-group">
+    <input type='hidden' class='form-control' name='director_id' value='<%= director._id %>' required>
+  </div>
+  <button type='submit' style='background:red;color:white'>Delete</button>
+  <a href='<%= director.getUrl() %>' style='margin-left: 10px'>Go back</a>
+</form>
+<% } %>
