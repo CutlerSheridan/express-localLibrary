@@ -151,7 +151,7 @@ exports.movieinstance_delete_get = asyncHandler(async (req, res, next) => {
   });
 });
 exports.movieinstance_delete_post = asyncHandler(async (req, res, next) => {
-  const id = new ObjectId(req.params.id);
+  const id = new ObjectId(req.body.instance_id);
 
   await db.collection('movie_instances').deleteOne({ _id: id });
   res.redirect('/catalogue/movieinstances');

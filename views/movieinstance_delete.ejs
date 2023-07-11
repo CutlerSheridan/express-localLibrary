@@ -12,7 +12,7 @@
 
 <form method='POST' action=''>
   <div class="form-group">
-    <input type='hidden' name='instance_id' value='<%= instance._id %>'>
+    <input type='hidden' class='form-control' name='instance_id' value='<%= instance._id %>' required>
   </div>
   <button type='submit' style='background:red;color:white'>Delete</button>
   <a href='<%= instance.getUrl() %>' style='margin-left:10px'>Go back</a>

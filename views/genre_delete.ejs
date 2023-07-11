@@ -1,0 +1,26 @@
+<h1><%= genre.name %></h1>
+
+<% if (movies.length) { %>
+<p><strong>Delete all movies of this genre before deleting the genre.</strong></p>
+<h4>Movies</h4>
+<dl>
+  <% movies.forEach(movie => { %>
+  <dt><a href='<%= movie.getUrl() %>'><%= movie.title %></a> (<%= movie.releaseYear %>)</dt>
+  <dd><%= movie.summary %></dd>
+  <% }) %>
+  <% if (!movies.length) { %>
+  <p>No movies currently listed of this genre.</p>
+  <% } %>
+</dl>
+<hr>
+<a href='<%= genre.getUrl() %>'>Go back</a>
+<% } else { %>
+<p>Are you sure you want to delete this genre?</p>
+<form method='POST' action=''>
+  <div class='form-group'>
+    <input type='hidden' class='form-control' name='genre_id' value='<%= genre._id %>' required>
+  </div>
+  <button type='submit' style='background:red;color:white'>Delete</button>
+  <a href='<%= genre.getUrl() %>' style='margin-left:10px'>Go back</a>
+</form>
+<% } %>

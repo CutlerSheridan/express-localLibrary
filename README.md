@@ -10,9 +10,9 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 - add existing director check to director create form
 - create MongoDB indices:
-  - movies: genre.\_id
+  - movies: genre.\_id for genre_detail and genre_delete
   - ? movie_instances: $lookup movies.\_id from movie.\_id
-  - movie_instance: movie.\_id
+  - movie_instance: by movie.\_id for movie_detail and movie_delete
   - genres: name, case insensitive w/ collation of 2 (1 would also ignore diacritics) - determine if this is necessary as it's only used when creating and people are more forgiving of that; if created, remove regex field value from genreController and add .collation() parameters
   - movies: case insensitve by title for movieinstance_create_get and \_post
   - movies: by director.\_id for director_delete_get
@@ -26,6 +26,15 @@ View movies in your collection, how many copies of each and in which formats, wh
 - add credit
 
 #### DONE
+
+_0.3.3_
+
+- add "Go back" link to all delete screens when delete is not an option
+- implememt genre_delete
+
+_0.3.2_
+
+- implement movie_delete
 
 _0.3.1_
 

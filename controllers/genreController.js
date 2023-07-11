@@ -108,10 +108,48 @@ exports.genre_create_post = [
 ];
 
 exports.genre_delete_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Genre delete GET');
+  const id = new ObjectId(req.params.id);
+  const [genreDoc, movieDocs] = await Promise.all([
+    db.collection('genres').findOne({ _id: id }),
+    db
+      .collection('movies')
+      .find({ 'genre._id': id })
+      .sort({ title: 1 })
+      .toArray(),
+  ]);
+  const genre = Genre(genreDoc);
+  const movies = movieDocs.map((x) => Movie(x));
+
+  res.render('layout', {
+    contentFile: 'genre_delete',
+    title: 'Delete Genre',
+    genre,
+    movies,
+  });
 });
 exports.genre_delete_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Genre delete POST');
+  const id = new ObjectId(req.body.genre_id);
+  const [genreDoc, movieDocs] = await Promise.all([
+    db.collection('genres').findOne({ _id: id }),
+    db
+      .collection('movies')
+      .find({ 'genre._id': id })
+      .sort({ title: 1 })
+      .toArray(),
+  ]);
+  const genre = Genre(genreDoc);
+  const movies = movieDocs.map((x) => Movie(x));
+
+  if (movies.length) {
+    res.render('layout', {
+      contentFile: 'genre_delete',
+      title: 'Delete Genre',
+      genre,
+      movies,
+    });
+  }
+  await db.collection('genres').deleteOne({ _id: id });
+  res.redirect('/catalogue/genres');
 });
 
 exports.genre_update_get = asyncHandler(async (req, res, next) => {

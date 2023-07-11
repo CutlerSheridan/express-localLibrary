@@ -1,0 +1,33 @@
+<h1><%= movie.title %> (<%= movie.releaseYear %>)</h1>
+
+<% if (instances.length) { %>
+<p><strong>Delete all copies of this movie before deleting the movie.</strong></p>
+<div style='margin-left: 30px'>
+  <h4>Copies</h4>
+  <% instances.forEach((instance, index) => { %>
+  <hr>
+  <p><strong>Format: </strong><%= instance.format %></p>
+  <% if (instance.edition) { %>
+  <p><strong>Edition: </strong><%= instance.edition %></p>
+  <% } %>
+  <p class="<%= instance.status === 'available' ? 'text-success' : instance.status === 'loaned' ? 'text-warning' : 'text-danger' %>" style='text-transform: capitalize'><%= instance.status %></p>
+  <% if (instance.status !== 'available') { %>
+  <p><strong>Since: </strong><%= instance.formatStatusChangeDate() %></p>
+  <% } %>
+  <p><strong>ID: </strong><a href='<%= instance.getUrl() %>'><%= instance._id.toString() %></a></p>
+  <% if (index === instances.length - 1) { %>
+  <hr>
+  <% } %>
+  <% }) %>
+  <a href='<%= movie.getUrl() %>'>Go back</a>
+</div>
+<% } else { %>
+<p>Are you sure you want to delete this movie?</p>
+<form method='POST' action=''>
+  <div class='form-group'>
+    <input type='hidden' class='form-control' name='movie_id' value='<%= movie._id %>' required>
+  </div>
+  <button type='submit' style='background:red;color:white'>Delete</button>
+  <a href='<%= movie.getUrl() %>' style='margin-left:10px'>Go back</a>
+</form>
+<% } %>

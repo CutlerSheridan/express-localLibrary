@@ -206,10 +206,40 @@ exports.movie_create_post = [
 ];
 
 exports.movie_delete_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Movie delete GET');
+  const id = new ObjectId(req.params.id);
+  const [movieDoc, instanceDocs] = await Promise.all([
+    db.collection('movies').findOne({ _id: id }),
+    db.collection('movie_instances').find({ 'movie._id': id }).toArray(),
+  ]);
+  const movie = Movie(movieDoc);
+  const instances = MovieInstance(instanceDocs);
+
+  res.render('layout', {
+    contentFile: 'movie_delete',
+    title: 'Delete Movie',
+    movie,
+    instances,
+  });
 });
 exports.movie_delete_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Movie delete POST');
+  const id = new ObjectId(req.body.movie_id);
+  const [movieDoc, instanceDocs] = await Promise.all([
+    db.collection('movies').findOne({ _id: id }),
+    db.collection('movie_instances').find({ 'movie._id': id }).toArray(),
+  ]);
+  const movie = Movie(movieDoc);
+  const instances = MovieInstance(instanceDocs);
+
+  if (instances.length) {
+    res.render('layout', {
+      contentFile: 'movie_delete',
+      title: 'Delete Movie',
+      movie,
+      instances,
+    });
+  }
+  await db.collection('movies').deleteOne({ _id: id });
+  res.redirect('/catalogue/movies');
 });
 
 exports.movie_update_get = asyncHandler(async (req, res, next) => {

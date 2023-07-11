@@ -1,6 +1,6 @@
 <h1><%= genre.name %></h1>
-<h4>Movies</h4>
 
+<h4>Movies</h4>
 <dl>
   <% movies.forEach(movie => { %>
   <dt><a href='<%= movie.getUrl() %>'><%= movie.title %></a> (<%= movie.releaseYear %>)</dt>
@@ -10,3 +10,6 @@
   <p>No movies currently listed of this genre.</p>
   <% } %>
 </dl>
+
+<hr>
+<a href='<%= genre.getUrl() + "/delete" %>'>Delete genre</a>
