@@ -130,10 +130,31 @@ exports.movieinstance_create_post = [
 ];
 
 exports.movieinstance_delete_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: MovieInstance delete GET');
+  const id = new ObjectId(req.params.id);
+  const instanceDoc = await db
+    .collection('movie_instances')
+    .findOne({ _id: id });
+  const instance = MovieInstance(instanceDoc);
+  const movieDoc = await db
+    .collection('movies')
+    .findOne(
+      { _id: instance.movie._id },
+      { projection: { title: 1, releaseYear: 1 } }
+    );
+  const movie = Movie(movieDoc);
+
+  res.render('layout', {
+    contentFile: 'movieinstance_delete',
+    title: 'Delete Copy',
+    instance,
+    movie,
+  });
 });
 exports.movieinstance_delete_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: MovieInstance delete POST');
+  const id = new ObjectId(req.params.id);
+
+  await db.collection('movie_instances').deleteOne({ _id: id });
+  res.redirect('/catalogue/movieinstances');
 });
 
 exports.movieinstance_update_get = asyncHandler(async (req, res, next) => {

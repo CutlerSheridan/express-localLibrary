@@ -27,6 +27,11 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_0.3.1_
+
+- fix instance list links to go to instance details pages
+- implement movieinstance_delete
+
 _0.3.0_
 
 - implement director_delete

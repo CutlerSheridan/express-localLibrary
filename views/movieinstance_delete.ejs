@@ -1,4 +1,5 @@
 <h1>ID: <%= instance._id %></h1>
+
 <p><strong>Title: </strong><a href='<%= movie.getUrl() %>'><%= movie.title %> (<%= movie.releaseYear %>)</a></p>
 <p><strong>Format: </strong><%= instance.format %></p>
 <% if (instance.edition) { %>
@@ -9,4 +10,10 @@
 <p><strong>Since: </strong><%= instance.formatStatusChangeDate() %></p>
 <% } %>
 
-<a href='<%= instance.getUrl() %>/delete'>Delete copy</a>
+<form method='POST' action=''>
+  <div class="form-group">
+    <input type='hidden' name='instance_id' value='<%= instance._id %>'>
+  </div>
+  <button type='submit' style='background:red;color:white'>Delete</button>
+  <a href='<%= instance.getUrl() %>' style='margin-left:10px'>Go back</a>
+</form>
