@@ -27,6 +27,12 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_0.4.0_
+
+- refactor director_form to use checkboxes for director so multiple can be selected
+- fix ObjectId agreement movie_create_post for director and genre checkbox indicators
+- implement movie_update
+
 _0.3.3_
 
 - add "Go back" link to all delete screens when delete is not an option

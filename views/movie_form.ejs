@@ -1,24 +1,21 @@
 <h1><%= title %></h1>
 <form method='POST' action=''>
   <div class="form-group">
-    <label for="title">Title: </label>
+    <label for="title">Title: *</label>
     <input type="text" class="form-control" id="title" name='title' value='<%= locals.movie ? movie.title : "" %>' placeholder='Blade Runner'>
   </div>
   <div class="form-group">
-    <label for="director">Director: </label>
-    <select class='form-control' id='director' name='director' required>
-      <% directors.forEach(dir => { %>
-      <% if (locals.movie) { %>
-      <option value='<%= dir._id %>' <%= movie.director.findIndex(x => x._id === dir._id.toString()) > -1 ? 'selected' : '' %>><%= dir.getName() %></option>
-      <% } else { %>
-      <option value='<%= dir._id %>'><%= dir.getName() %></option>
-      <% } %>
-      <% }) %>
-    </select>
+    <label>Director: *</label>
+    <% directors.forEach(dir => { %>
+    <div>
+      <input type='checkbox' class='checkbox-input' id='<%= dir._id %>' name='director' value='<%= dir._id %>' <%= dir.checked ? 'checked' : '' %>>
+      <label for='<%= dir._id %>'><%= dir.getName() %></label>
+    </div>
+    <% }) %>
   </div>
   <div class="form-group">
-    <label for="release_year">Release year: </label>
-    <input type='text' class='form-control' id='release_year' name='release_year'>
+    <label for="release_year">Release year: *</label>
+    <input type='text' class='form-control' id='release_year' name='release_year' value='<%= locals.movie ? movie.releaseYear : "" %>'>
   </div>
   <div class="form-group">
     <label>Genres: </label>
@@ -31,11 +28,15 @@
 
   </div>
   <div class="form-group">
-    <label for="summary">Summary: </label>
-    <input type='textarea' class='form-control' id='summary' name='summary'>
+    <label for="summary">Summary: *</label>
+    <input type='textarea' class='form-control' id='summary' name='summary' value='<%= locals.movie ? movie.summary : "" %>'>
   </div>
   <button type='submit'>Submit</button>
+  <% if (locals.movie) { %>
+  <a href='<%= movie.getUrl() %>' style='margin-left:10px'>Go back</a>
+  <% } %>
 </form>
+<p>* required</p>
 
 <% if (locals.errors) { %>
 <ul>

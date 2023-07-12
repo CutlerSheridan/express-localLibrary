@@ -109,7 +109,7 @@ exports.movie_create_get = asyncHandler(async (req, res, next) => {
       .find({})
       .sort({ lastName: 1, firstName: 1 }, { collation: { strength: 1 } })
       .toArray(),
-    db.collection('genres').find({}).toArray(),
+    db.collection('genres').find({}).sort({ name: 1 }).toArray(),
   ]);
 
   allDirectors = Director(allDirectors);
@@ -144,6 +144,7 @@ exports.movie_create_post = [
     next();
   },
   body('title', 'Title must be specified').trim().isLength({ min: 1 }).escape(),
+  body('director', 'Must include at least one director').isArray({ min: 1 }),
   body('director.*').escape(),
   body('summary', 'Summary must not be empty')
     .trim()
@@ -179,13 +180,18 @@ exports.movie_create_post = [
           .find({})
           .sort({ lastName: 1, firstName: 1 }, { collation: { strength: 1 } })
           .toArray(),
-        db.collection('genres').find({}).toArray(),
+        db.collection('genres').find({}).sort({ name: 1 }).toArray(),
       ]);
       allDirectors = Director(allDirectors);
       allGenres = Genre(allGenres);
+      for (const dir of allDirectors) {
+        if (movie.director.findIndex((x) => x._id.equals(dir._id)) > -1) {
+          dir.checked = true;
+        }
+      }
       // mark selected genres as checked
       for (const genre of allGenres) {
-        if (movie.genre.findIndex((x) => x._id === genre._id.toString()) > -1) {
+        if (movie.genre.findIndex((x) => x._id.equals(genre._id)) > -1) {
           genre.checked = true;
         }
       }
@@ -243,8 +249,133 @@ exports.movie_delete_post = asyncHandler(async (req, res, next) => {
 });
 
 exports.movie_update_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Movie update GET');
+  const id = new ObjectId(req.params.id);
+  const movieDoc = await db.collection('movies').findOne({ _id: id });
+  const [directorDocs, genreDocs] = await Promise.all([
+    db
+      .collection('directors')
+      .find({})
+      .sort({ lastName: 1, firstName: 1 })
+      .toArray(),
+    db.collection('genres').find({}).sort({ name: 1 }).toArray(),
+  ]);
+  const [movie, directors, genres] = [
+    Movie(movieDoc),
+    Director(directorDocs),
+    Genre(genreDocs),
+  ];
+  if (!movie) {
+    const err = new Error('Movie not found');
+    err.status = 404;
+    return next(err);
+  }
+  for (const dir of directors) {
+    if (movie.director.findIndex((x) => x._id.equals(dir._id)) > -1) {
+      dir.checked = true;
+    }
+  }
+  for (const genre of genres) {
+    if (movie.genre.findIndex((x) => x._id.equals(genre._id)) > -1) {
+      genre.checked = true;
+    }
+  }
+
+  res.render('layout', {
+    contentFile: 'movie_form',
+    title: 'Update Movie',
+    movie,
+    directors,
+    genres,
+  });
 });
-exports.movie_update_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Movie update POST');
-});
+exports.movie_update_post = [
+  (req, res, next) => {
+    if (!(req.body.genre instanceof Array)) {
+      if (!req.body.genre) {
+        req.body.genre = [];
+      } else {
+        req.body.genre = [req.body.genre];
+      }
+    }
+
+    next();
+  },
+  (req, res, next) => {
+    if (!(req.body.director instanceof Array)) {
+      if (!req.body.director) {
+        req.body.director = [];
+      } else {
+        req.body.director = [req.body.director];
+      }
+    }
+    next();
+  },
+  body('title', 'Title must be specified').trim().isLength({ min: 1 }).escape(),
+  body('director', 'Must include at least one director').isArray({ min: 1 }),
+  body('director.*').escape(),
+  body('summary', 'Summary must not be empty')
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body('release_year')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('Release year must be specified')
+    .isLength({ min: 4, max: 4 })
+    .withMessage('Release year must be four digits long'),
+  body('genre.*').escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const movie = Movie({
+      _id: new ObjectId(req.params.id),
+      title: req.body.title,
+      director: req.body.director.map((x) => {
+        return { _id: new ObjectId(x) };
+      }),
+      releaseYear: +req.body.release_year,
+      summary: req.body.summary || '',
+      genre: req.body.genre.map((x) => {
+        return { _id: new ObjectId(x) };
+      }),
+    });
+
+    if (!errors.isEmpty()) {
+      let [allDirectors, allGenres] = await Promise.all([
+        db
+          .collection('directors')
+          .find({})
+          .sort({ lastName: 1, firstName: 1 }, { collation: { strength: 1 } })
+          .toArray(),
+        db.collection('genres').find({}).sort({ name: 1 }).toArray(),
+      ]);
+      allDirectors = Director(allDirectors);
+      allGenres = Genre(allGenres);
+      for (const dir of allDirectors) {
+        if (movie.director.findIndex((x) => x._id.equals(dir._id)) > -1) {
+          dir.checked = true;
+        }
+      }
+      for (const genre of allGenres) {
+        if (movie.genre.findIndex((x) => x._id.equals(genre._id)) > -1) {
+          genre.checked = true;
+        }
+      }
+      res.render('layout', {
+        contentFile: 'movie_form',
+        title: 'Create Movie',
+        directors: allDirectors,
+        genres: allGenres,
+        movie,
+        ObjectId,
+        errors: errors.array(),
+      });
+    } else {
+      await db
+        .collection('movies')
+        .updateOne({ _id: movie._id }, { $set: movie });
+      res.redirect(movie.getUrl());
+    }
+  }),
+];
