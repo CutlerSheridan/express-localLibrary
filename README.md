@@ -2,7 +2,7 @@
 
 ## A movie library built using Express and MongoDB
 
-View movies in your collection, how many copies of each and in which formats, which are available or not, directors, and genres.
+View movies in your collection, how many copies of each and in which formats, which are available or not, directors, and genres. Update them, delete them, add new ones.
 
 #### TODO NEXT
 
@@ -26,6 +26,10 @@ View movies in your collection, how many copies of each and in which formats, wh
 - add credit
 
 #### DONE
+
+_0.4.3_
+
+- implemenet director_update
 
 _0.4.2_
 

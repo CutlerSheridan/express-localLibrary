@@ -148,8 +148,53 @@ exports.director_delete_post = asyncHandler(async (req, res, next) => {
 });
 
 exports.director_update_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Director update GET');
+  const id = new ObjectId(req.params.id);
+  const directorDoc = await db.collection('directors').findOne({ _id: id });
+  const director = Director(directorDoc);
+  res.render('layout', {
+    contentFile: 'director_form',
+    title: 'Update Director',
+    director,
+    to_date_yyyy_mm_dd,
+  });
 });
-exports.director_update_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Director update POST');
-});
+exports.director_update_post = [
+  oneOf([body('first_name').notEmpty(), body('last_name').notEmpty()], {
+    message: 'A first or last name must be provided',
+  }),
+  body('first_name').trim().escape(),
+  body('last_name').trim().escape(),
+  body('birth_date', 'Invalid date of birth')
+    .optional({ values: 'falsy' })
+    .isISO8601()
+    .toDate(),
+  body('death_date', 'Invalid date of death')
+    .optional({ values: 'falsy' })
+    .isISO8601()
+    .toDate(),
+  asyncHandler(async (req, res, next) => {
+    const id = new ObjectId(req.params.id);
+    const errors = validationResult(req);
+    const director = Director({
+      _id: id,
+      firstName: req.body.first_name,
+      lastName: req.body.last_name,
+      birthDate: req.body.birth_date,
+      deathDate: req.body.death_date,
+    });
+    if (!errors.isEmpty()) {
+      res.render('layout', {
+        contentFile: 'director_form',
+        title: 'Update Director',
+        director,
+        to_date_yyyy_mm_dd,
+        errors: errors.array(),
+      });
+    } else {
+      await db
+        .collection('directors')
+        .updateOne({ _id: id }, { $set: director });
+      res.redirect(director.getUrl());
+    }
+  }),
+];

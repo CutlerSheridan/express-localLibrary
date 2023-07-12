@@ -18,6 +18,9 @@
     <input type='date' class='form-control' id='death_date' name='death_date' value='<%= locals.director ? to_date_yyyy_mm_dd(director.deathDate) : "" %>' placeholder='mm/dd/yyyy' />
   </div>
   <button type='submit'>Submit</button>
+  <% if (locals.director) { %>
+  <a href='<%= director.getUrl() %>' style='margin-left:10px'>Go back</a>
+  <% } %>
 </form>
 
 <% if (locals.errors) { %>
