@@ -27,6 +27,10 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_0.4.2_
+
+- implement movieinstance_update
+
 _0.4.1_
 
 - implement genre_update

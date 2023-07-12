@@ -158,8 +158,82 @@ exports.movieinstance_delete_post = asyncHandler(async (req, res, next) => {
 });
 
 exports.movieinstance_update_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: MovieInstance update GET');
+  const id = new ObjectId(req.params.id);
+  const [instanceDoc, movieDocs] = await Promise.all([
+    db.collection('movie_instances').findOne({ _id: id }),
+    db
+      .collection('movies')
+      .find({}, { projection: { title: 1, releaseYear: 1 } })
+      .sort({ title: 1 })
+      .toArray(),
+  ]);
+  const [instance, movies] = [
+    MovieInstance(instanceDoc),
+    movieDocs.map((x) => Movie(x)),
+  ];
+  res.render('layout', {
+    contentFile: 'movieinstance_form',
+    title: 'Update Copy',
+    instance,
+    movies,
+    formats: FORMATS,
+    statuses: STATUSES,
+    to_date_yyyy_mm_dd,
+  });
 });
-exports.movieinstance_update_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: MovieInstance update POST');
-});
+exports.movieinstance_update_post = [
+  body('movie', 'Movie must be specified')
+    .trim()
+    .notEmpty()
+    .escape()
+    .customSanitizer((value) => new ObjectId(value)),
+  body('status', 'Unrecognized status')
+    .optional({ values: 'falsy' })
+    .custom((value) => STATUSES.indexOf(value) !== -1)
+    .escape(),
+  body('edition').escape(),
+  body('format')
+    .trim()
+    .notEmpty()
+    .escape()
+    .withMessage('Must select format')
+    .custom((value) => FORMATS.indexOf(value) !== -1)
+    .withMessage('Unrecognized format'),
+  body('unavailable_date', 'Invalid unavailable date')
+    .optional({ values: 'falsy' })
+    .customSanitizer((value, { req }) =>
+      req.body.status === STATUSES[0] ? '' : value
+    )
+    .isISO8601()
+    .toDate(),
+  asyncHandler(async (req, res, next) => {
+    const id = new ObjectId(req.params.id);
+    const errors = validationResult(req);
+    const instance = MovieInstance({
+      ...req.body,
+      _id: id,
+      movie: { _id: req.body.movie },
+      statusChangeDate: req.body.unavailable_date,
+    });
+    if (!errors.isEmpty()) {
+      const movies = await db
+        .collection('movies')
+        .find({}, { projection: { title: 1, releaseYear: 1 } })
+        .toArray();
+      res.render('layout', {
+        contentFile: 'movieinstance_form',
+        title: 'Update Copy',
+        instance,
+        movies,
+        formats: FORMATS,
+        statuses: STATUSES,
+        to_date_yyyy_mm_dd,
+      });
+    } else {
+      await db
+        .collection('movie_instances')
+        .updateOne({ _id: id }, { $set: instance });
+      res.redirect(instance.getUrl());
+    }
+  }),
+];
