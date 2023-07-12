@@ -6,6 +6,9 @@
     <input type="text" class='form-control' id='name' name='name' placeholder='Horror, Comedy, etc.' value="<%= locals.genre ? genre.name : '' %>" required />
   </div>
   <button type='submit'>Submit</button>
+  <% if (locals.genre) { %>
+  <a href='<%= genre.getUrl() %>' style='margin-left:10px'>Go back</a>
+  <% } %>
 </form>
 <% if(locals.errors) { %>
 <ul>

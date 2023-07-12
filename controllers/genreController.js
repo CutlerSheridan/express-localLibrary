@@ -61,7 +61,6 @@ exports.genre_create_post = [
     .escape(),
   // process request after validation and sanitization
   asyncHandler(async (req, res, next) => {
-    console.log(req.body);
     // extract validation errors from request
     const errors = validationResult(req);
     // normalize capitalization
@@ -88,21 +87,20 @@ exports.genre_create_post = [
         errors: errors.array(),
       });
       return;
+    }
+    // data from form is valid
+    // check if genre with same name already exists
+    const nameRegex = new RegExp(req.body.name, 'i');
+    const genreExists = await db
+      .collection('genres')
+      .findOne({ name: { $regex: nameRegex } });
+    if (genreExists) {
+      // genre already exists, redirect to details page
+      res.redirect(Genre(genreExists).getUrl());
     } else {
-      // data from form is valid
-      // check if genre with same name already exists
-      const re = new RegExp(req.body.name, 'i');
-      const genreExists = await db
-        .collection('genres')
-        .findOne({ name: { $regex: re } });
-      if (genreExists) {
-        // genre already exists, redirect to details page
-        res.redirect(Genre(genreExists).getUrl());
-      } else {
-        await db.collection('genres').insertOne(genre);
-        // new genre saved; redirect to details page
-        res.redirect(genre.getUrl());
-      }
+      await db.collection('genres').insertOne(genre);
+      // new genre saved; redirect to details page
+      res.redirect(genre.getUrl());
     }
   }),
 ];
@@ -153,8 +151,39 @@ exports.genre_delete_post = asyncHandler(async (req, res, next) => {
 });
 
 exports.genre_update_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Genre update GET');
+  const id = new ObjectId(req.params.id);
+  const genreDoc = await db.collection('genres').findOne({ _id: id });
+  const genre = Genre(genreDoc);
+  res.render('layout', {
+    contentFile: 'genre_form',
+    title: 'Update Genre',
+    genre,
+  });
 });
-exports.genre_update_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Genre update POST');
-});
+exports.genre_update_post = [
+  body('name', 'Name may not be empty').trim().notEmpty().escape(),
+  asyncHandler(async (req, res, next) => {
+    const id = new ObjectId(req.params.id);
+    const errors = validationResult(req);
+    const genre = Genre({ _id: id, name: req.body.name });
+    if (!errors.isEmpty()) {
+      res.render('layout', {
+        contentFile: 'genre_form',
+        title: 'Update Genre',
+        genre,
+        errors: errors.array(),
+      });
+    }
+    const genreExists = await db
+      .collection('genres')
+      .findOne({ name: genre.name });
+    if (genreExists) {
+      res.redirect(Genre(genreExists).getUrl());
+    } else {
+      await db
+        .collection('genres')
+        .updateOne({ _id: genre._id }, { $set: { name: genre.name } });
+      res.redirect(genre.getUrl());
+    }
+  }),
+];
