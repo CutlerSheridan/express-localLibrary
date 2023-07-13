@@ -4,6 +4,7 @@ const { to_date_yyyy_mm_dd } = require('./date_utility');
 const { db, ObjectId } = require('../mongodb_config');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult, oneOf } = require('express-validator');
+const debug = require('debug')('director');
 
 exports.director_list = asyncHandler(async (req, res, next) => {
   const allDirectorsRaw = await db
@@ -150,6 +151,12 @@ exports.director_delete_post = asyncHandler(async (req, res, next) => {
 exports.director_update_get = asyncHandler(async (req, res, next) => {
   const id = new ObjectId(req.params.id);
   const directorDoc = await db.collection('directors').findOne({ _id: id });
+  if (!directorDoc) {
+    debug(`ID not found: ${req.params.id}`);
+    const err = new Error('Director not found');
+    err.status = 404;
+    return next(err);
+  }
   const director = Director(directorDoc);
   res.render('layout', {
     contentFile: 'director_form',

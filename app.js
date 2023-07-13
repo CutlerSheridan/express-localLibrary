@@ -3,6 +3,9 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const compression = require('compression');
+const helmet = require('helmet');
+const RateLimit = require('express-rate-limit');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -11,6 +14,21 @@ const catalogueRouter = require('./routes/catalogue');
 const app = express();
 
 // view engine setup
+app.use(compression());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
+    },
+  })
+);
+app.use(
+  RateLimit({
+    windowMs: 1 * 60 * 1000,
+    max: 100,
+  })
+);
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 

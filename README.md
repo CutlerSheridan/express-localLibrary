@@ -27,6 +27,10 @@ View movies in your collection, how many copies of each and in which formats, wh
 
 #### DONE
 
+_1.0.0_
+
+- add dependencies for production environment
+
 _0.4.3_
 
 - implemenet director_update
