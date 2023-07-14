@@ -4,6 +4,8 @@
 
 View movies in your collection, how many copies of each and in which formats, which are available or not, directors, and genres. Update them, delete them, add new ones.
 
+See it deployed at express-locallibrary-production-7fae.up.railway.app
+
 #### TODO NEXT
 
 #### TODO LATER
@@ -26,6 +28,10 @@ View movies in your collection, how many copies of each and in which formats, wh
 - add credit
 
 #### DONE
+
+_1.0.1.1_
+
+- add deployed URL to README
 
 _1.0.1_
 
